@@ -11,11 +11,11 @@ const MonacoEditorWithNoSSR = dynamic(
 export default function Home() {
   return (
     <div className="h-screen w-screen">
-      <MainHead></MainHead>
-      <div className="w-full h-full px-10 py-4">
-        <NavigationMenu />
+      {/* <MainHead></MainHead> */}
+      <div className="w-full h-full px-2 py-2">
+        {/* <NavigationMenu /> */}
         <MonacoEditorWithNoSSR />
-        <Footer />
+        {/* <Footer /> */}
       </div>
     </div>
   );

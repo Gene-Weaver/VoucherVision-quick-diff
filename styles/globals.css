@@ -24,13 +24,13 @@
   }
 
   .highlightText {
-    background: -webkit-linear-gradient(#8c4fc7, #4662dc);
+    background: -webkit-linear-gradient(#00f719, #003005);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
 
   .logo-highlightText {
-    background: -webkit-linear-gradient(#8c4fc7, #4662dc);
+    background: -webkit-linear-gradient(#00f719, #003005);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }

@@ -9,12 +9,14 @@ const InputEditor = ({
     handleClear,
     language,
     styling,
+    height,
   }) => {
     return (
       <div className="flex flex-col md:w-1/2 h-full">
         <Editor
           className="w-full h-full border border-gray-200 shadow-md"
           theme="vs-light"
+          height={height}
           language={language}
           value={value}
           onChange={onChange}
@@ -27,10 +29,11 @@ const InputEditor = ({
             scrollBeyondLastLine: false,
           }}
         />
-        <div className="flex flex-row gap-2 mt-4" style={styling}>
-          <CustomButton handleOnClick={handleClipboard}>Clipboard</CustomButton>
-          <CustomButton handleOnClick={handleClear}>Clear</CustomButton>
-        </div>
+        {/* <div className="flex flex-row gap-2 mt-4" style={styling}> */}
+          {/* <CustomButton handleOnClick={onFavorite}>Favorite</CustomButton> */}
+          {/* <CustomButton handleOnClick={handleClipboard}>Clipboard</CustomButton> */}
+          {/* <CustomButton handleOnClick={handleClear}>Clear</CustomButton> */}
+        {/* </div> */}
       </div>
     );
   };

@@ -20,6 +20,10 @@ const defaultLanguage = {
 const MonacoEditor = () => {
   const [leftInput, setLeftInput] = useState(defaultLeft);
   const [rightInput, setRightInput] = useState(defaultRight);
+  
+  const [numLines, setNumLines] = useState(25); // Default number of lines
+  const lineHeight = 19; // Monaco Editor's approximate line height in pixels
+  const editorHeight = `${numLines * lineHeight}px`; // Calculate height based on number of lines
 
   const [diffObj, setDiffObj] = useState({
     left: defaultLeft,
@@ -57,6 +61,7 @@ const MonacoEditor = () => {
     }
   };
 
+
   const handleClear = (panel) => {
     switch (panel) {
       case PANEL.LEFT:
@@ -67,6 +72,14 @@ const MonacoEditor = () => {
         break;
       default:
         break;
+    }
+  };
+
+  const handleFavoriteSelection = (side) => {
+    if (side === PANEL.LEFT) {
+      setFavorite(leftInput);
+    } else if (side === PANEL.RIGHT) {
+      setFavorite(rightInput);
     }
   };
 
@@ -94,11 +107,32 @@ const MonacoEditor = () => {
     <div className="w-full flex flex-col gap-4">
       <div className="w-full flex flex-row justify-between items-end">
         <div className="flex flex-row gap-4 items-center">
-          <LanguageComboBox selectedLanguage={diffConfig.language} setSelectedLanguage={languageComboBoxDidSelect}></LanguageComboBox>
-          <DiffModeMenu selected={selectedDiffMode} setSelected={setSelectedDiffMode} diffModes={diffModes}/>
+          {/* Your existing components */}
+          <LanguageComboBox
+            selectedLanguage={diffConfig.language}
+            setSelectedLanguage={languageComboBoxDidSelect}
+          />
+          <DiffModeMenu
+            selected={selectedDiffMode}
+            setSelected={setSelectedDiffMode}
+            diffModes={diffModes}
+          />
+        </div>
+        <div className="flex flex-row items-center gap-2">
+          <label htmlFor="lineSlider">Visible Lines:</label>
+          <input
+            id="lineSlider"
+            type="range"
+            min="10" // Minimum 10 lines
+            max="50" // Maximum 50 lines
+            className="w-32 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+            value={numLines} // Use numLines here instead of editorHeight
+            onChange={(e) => setNumLines(Number(e.target.value))} // Convert to number
+          />
+          <span>{numLines} lines</span> {/* Display the number of lines */}
         </div>
         <div className="flex flex-row">
-          <CTAButton handleOnClick={() => handleShowDiff()}>
+          <CTAButton handleOnClick={handleShowDiff}>
             {showDiffEditor ? "Edit Input" : "Show Diff"}
           </CTAButton>
         </div>
@@ -107,7 +141,8 @@ const MonacoEditor = () => {
       {showDiffEditor ? (
         <div className="w-full editorContainer">
           <DiffEditor
-            className="w-full h-full border border-gray-200 shadow-md"
+            className="w-full border border-gray-200 shadow-md"
+            height={editorHeight} // Apply the calculated height
             language={diffConfig.language.name}
             theme="vs-light"
             original={diffObj.left}
@@ -129,19 +164,20 @@ const MonacoEditor = () => {
           <InputEditor
             value={leftInput}
             onChange={(value) => handleInputChange(PANEL.LEFT, value)}
-            handleClipboard={() => handleClipboard(PANEL.LEFT)}
-            handleClear={() => handleClear(PANEL.LEFT)}
             language={diffConfig.language.name}
+            height={editorHeight}
             styling={{ justifyContent: "flex-start" }}
+            // onFavorite={() => handleFavoriteSelection(PANEL.LEFT)} // Add favorite callback
           />
           <div className="w-4 my-2 md:my-0"></div>
           <InputEditor
             value={rightInput}
             onChange={(value) => handleInputChange(PANEL.RIGHT, value)}
-            handleClipboard={() => handleClipboard(PANEL.RIGHT)}
-            handleClear={() => handleClear(PANEL.RIGHT)}
             language={diffConfig.language.name}
+            height={editorHeight}
             styling={{ justifyContent: "flex-end" }}
+            // onFavorite={() => handleFavoriteSelection(PANEL.RIGHT)} // Add favorite callback
+
           />
         </div>
       )}
