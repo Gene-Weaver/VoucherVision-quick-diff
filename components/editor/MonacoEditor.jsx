@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { DiffEditor } from "@monaco-editor/react";
 import DiffModeMenu from "./DiffModeMenu";
 import InputEditor from "./InputEditor";
@@ -18,8 +18,10 @@ const defaultLanguage = {
 }
 
 const MonacoEditor = () => {
-  const [leftInput, setLeftInput] = useState(defaultLeft);
-  const [rightInput, setRightInput] = useState(defaultRight);
+  // const [leftInput, setLeftInput] = useState(defaultLeft);
+  // const [rightInput, setRightInput] = useState(defaultRight);
+  const [leftText, setLeftText] = useState('');
+  const [rightText, setRightText] = useState('');
   
   const [numLines, setNumLines] = useState(25); // Default number of lines
   const lineHeight = 19; // Monaco Editor's approximate line height in pixels
@@ -41,8 +43,8 @@ const MonacoEditor = () => {
   const handleShowDiff = () => {
     setShowDiffEditor((prev) => !prev);
     setDiffObj({
-      left: leftInput,
-      right: rightInput,
+      left: leftText,
+      right: rightText,
     });
   };
 
@@ -103,6 +105,26 @@ const MonacoEditor = () => {
     })
   }
 
+  useEffect(() => {
+    // Parse the query parameters
+    const params = new URLSearchParams(window.location.search);
+    
+    const left = params.get('left');
+    const right = params.get('right');
+    
+    try {
+      // Decode and parse the JSON strings
+      if (left) {
+        setLeftText(JSON.stringify(JSON.parse(decodeURIComponent(left)), null, 2)); // Pretty print JSON
+      }
+      if (right) {
+        setRightText(JSON.stringify(JSON.parse(decodeURIComponent(right)), null, 2)); // Pretty print JSON
+      }
+    } catch (error) {
+      console.error("Error parsing JSON from URL:", error);
+    }
+  }, []);
+
   return (
     <div className="w-full flex flex-col gap-4">
       <div className="w-full flex flex-row justify-between items-end">
@@ -162,8 +184,9 @@ const MonacoEditor = () => {
       ) : (
         <div className="flex flex-col md:flex-row w-full editorContainer">
           <InputEditor
-            value={leftInput}
-            onChange={(value) => handleInputChange(PANEL.LEFT, value)}
+            // value={leftInput}
+            value={leftText}
+            onChange={setLeftText}
             language={diffConfig.language.name}
             height={editorHeight}
             styling={{ justifyContent: "flex-start" }}
@@ -171,8 +194,9 @@ const MonacoEditor = () => {
           />
           <div className="w-4 my-2 md:my-0"></div>
           <InputEditor
-            value={rightInput}
-            onChange={(value) => handleInputChange(PANEL.RIGHT, value)}
+            // value={rightInput}
+            value={rightText}
+            onChange={setRightText}
             language={diffConfig.language.name}
             height={editorHeight}
             styling={{ justifyContent: "flex-end" }}
